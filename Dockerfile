@@ -48,4 +48,4 @@ WORKDIR /app
 # Add OneAgent-specific environment variables
 # ENV LD_PRELOAD="/opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so"
 
-ENTRYPOINT ["/bin/bash"]
+# ENTRYPOINT ["/bin/bash"]
