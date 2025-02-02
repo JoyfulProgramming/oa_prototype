@@ -15,7 +15,6 @@ class OneAgent
   typedef :pointer, :onesdk_string_t
 
   attach_function :onesdk_webapplicationinfo_create_p, [:onesdk_string_t, :onesdk_string_t, :onesdk_string_t], :onesdk_webapplicationinfo_handle_t
-  attach_function :onesdk_asciistr, [:string], :onesdk_string_t
 
   def self.setup
     onesdk_stub_set_logging_level(0)
