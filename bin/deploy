@@ -1,0 +1,3 @@
+#/usr/bin/env bash
+
+rsync -avz -e "ssh -i ~/.ssh/id_rsa_hertzner_dynatrace_agent" --exclude='.git' --exclude='.ruby-lsp' . root@37.27.214.123:/app
