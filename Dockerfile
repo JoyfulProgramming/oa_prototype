@@ -34,16 +34,20 @@ FROM dynatrace/oneagent
 
 RUN microdnf install -y dnf
 
-RUN dnf install -y gcc make bzip2 openssl-devel zlib-devel libffi-devel libyaml-devel tar gzip findutils libffi pkg-config
+RUN dnf install -y gcc make bzip2 openssl-devel zlib-devel libffi-devel libyaml-devel tar gzip findutils libffi pkg-config git vim
 
 RUN curl -O https://cache.ruby-lang.org/pub/ruby/3.2/ruby-3.2.2.tar.gz
 RUN tar -xzf ruby-3.2.2.tar.gz
 RUN cd ruby-3.2.2 && ./configure --with-libffi-dir=/usr --with-libyaml-dir=/usr && make -j$(nproc) && make install
 
+RUN git clone https://github.com/Dynatrace/OneAgent-SDK-for-C.git /sdk
+
+RUN gem install ffi
 
 VOLUME [".:/app"]
 WORKDIR /app
-# RUN git clone https://github.com/Dynatrace/OneAgent-SDK-for-C.git /sdk
+
+# RUN mkdir -p /mnt/root
 
 # Add OneAgent-specific environment variables
 # ENV LD_PRELOAD="/opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so"
