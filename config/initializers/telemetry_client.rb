@@ -1,0 +1,1 @@
+App.telemetry_client.setup

@@ -1,5 +1,4 @@
 require 'bundler/setup'
-require_relative 'lib/app'
-# require_relative 'lib/one_agent'
+require_relative 'lib/boot'
 
 run Sinatra::Application

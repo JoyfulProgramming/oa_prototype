@@ -30,5 +30,3 @@ class OneAgent
     end
   end
 end
-
-OneAgent.setup

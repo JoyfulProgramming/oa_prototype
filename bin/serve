@@ -1,17 +1,14 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require_relative '../lib/app'
-
-# Set environment
-environment = ENV['RACK_ENV'] || 'production'
+require_relative '../lib/boot'
 
 # Configure Puma
 rackup_file = File.expand_path('../config.ru', __dir__)
 
 exec(
   'bundle', 'exec', 'puma',
-  '-e', environment,
+  '-e', App.env.to_s,
   '-b', 'tcp://0.0.0.0:3000',
   '-t', '0:16',
   '-w', '2',
