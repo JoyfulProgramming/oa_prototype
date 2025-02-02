@@ -11,6 +11,12 @@ class OneAgent
   attach_function :onesdk_stub_get_agent_load_info, [:pointer, :pointer], :void
   attach_function :onesdk_stub_set_logging_level, [:int], :void
 
+  typedef :pointer, :onesdk_webapplicationinfo_handle_t
+  typedef :pointer, :onesdk_string_t
+
+  attach_function :onesdk_webapplicationinfo_create, [:pointer, :pointer, :pointer], :onesdk_webapplicationinfo_handle_t
+  attach_function :onesdk_asciistr, [:string], :onesdk_string_t
+
   def self.setup
     onesdk_stub_set_logging_level(0)
     result = onesdk_initialize
@@ -28,5 +34,17 @@ class OneAgent
       puts "Agent compatible: #{agent_compatible.read_int != 0}"
       raise "Error: Agent not found or not compatible"
     end
+  end
+
+  def self.create_web_application_info(name:, unique_name:, context_root:)
+    onesdk_webapplicationinfo_create(
+      onesdk_asciistr(name),
+      onesdk_asciistr(unique_name),
+      onesdk_asciistr(context_root)
+    )
+  end
+
+  def trace(env)
+    puts "Tracing: #{env}"
   end
 end
