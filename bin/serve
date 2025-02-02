@@ -12,8 +12,8 @@ rackup_file = File.expand_path('../config.ru', __dir__)
 exec(
   'bundle', 'exec', 'puma',
   '-e', environment,
-  '-b', 'tcp://0.0.0.0:80', # Listen on all interfaces, port 80
-  '-t', '0:16',             # Min:Max threads
-  '-w', '2',                # Number of workers
+  '-b', 'tcp://0.0.0.0:3000',
+  '-t', '0:16',
+  '-w', '2',
   rackup_file
 )
