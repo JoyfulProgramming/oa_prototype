@@ -36,10 +36,14 @@ class OneAgent
   end
 
   def self.create_web_application_info(name:, unique_name:, context_root:)
-    onesdk_webapplicationinfo_create(
-      onesdk_asciistr(name),
-      onesdk_asciistr(unique_name),
-      onesdk_asciistr(context_root)
+    name_ptr = FFI::MemoryPointer.from_string(name)
+    unique_name_ptr = FFI::MemoryPointer.from_string(unique_name) 
+    context_root_ptr = FFI::MemoryPointer.from_string(context_root)
+
+    onesdk_webapplicationinfo_create_p(
+      name_ptr,
+      unique_name_ptr,
+      context_root_ptr
     )
   end
 
