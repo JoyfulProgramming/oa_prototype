@@ -11,7 +11,7 @@ class OneAgent
   attach_function :onesdk_stub_get_agent_load_info, [:pointer, :pointer], :void
   attach_function :onesdk_stub_set_logging_level, [:int], :void
 
-  typedef :pointer, :onesdk_webapplicationinfo_handle_t
+  typedef :uint64, :onesdk_webapplicationinfo_handle_t
   typedef :pointer, :onesdk_string_t
 
   attach_function :onesdk_webapplicationinfo_create_p, [:onesdk_string_t, :onesdk_string_t, :onesdk_string_t], :onesdk_webapplicationinfo_handle_t
