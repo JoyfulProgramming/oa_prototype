@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require_relative '../lib/app'
+
+# Set environment
+environment = ENV['RACK_ENV'] || 'production'
+
+# Configure Puma
+rackup_file = File.expand_path('../config.ru', __dir__)
+
+exec(
+  'bundle', 'exec', 'puma',
+  '-e', environment,
+  '-b', 'tcp://0.0.0.0:80', # Listen on all interfaces, port 80
+  '-t', '0:16',             # Min:Max threads
+  '-w', '2',                # Number of workers
+  rackup_file
+)
