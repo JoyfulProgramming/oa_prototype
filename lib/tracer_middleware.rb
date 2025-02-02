@@ -1,11 +1,12 @@
 class TracerMiddleware
   def initialize(app)
     @app = app
-    @telemetry_client = App.telemetry_client
   end
 
   def call(env)
-    throw telemetry_client.create_web_application_info(name: 'example.com', unique_name: 'MyWebApplication', context_root: '/my-web-app/')
+    App.telemetry_client.setup
+    handle = App.telemetry_client.create_web_application_info(name: 'WebShopProduction', unique_name: 'CheckoutService', context_root: '/')
+    throw handle
     @app.call(env)
   end
 

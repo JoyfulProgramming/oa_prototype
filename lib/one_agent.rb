@@ -11,10 +11,11 @@ class OneAgent
   attach_function :onesdk_stub_get_agent_load_info, [:pointer, :pointer], :void
   attach_function :onesdk_stub_set_logging_level, [:int], :void
 
-  typedef :uint64, :onesdk_webapplicationinfo_handle_t
-  typedef :pointer, :onesdk_string_t
+  typedef :uint64, :onesdk_handle_t
+  typedef :onesdk_handle_t, :onesdk_tracer_handle_t
+  typedef :onesdk_handle_t, :onesdk_webapplicationinfo_handle_t
 
-  attach_function :onesdk_webapplicationinfo_create_p, [:onesdk_string_t, :onesdk_string_t, :onesdk_string_t], :onesdk_webapplicationinfo_handle_t
+  attach_function :onesdk_webapplicationinfo_create_p, [:pointer, :pointer, :pointer], :onesdk_webapplicationinfo_handle_t
 
   def self.setup
     onesdk_stub_set_logging_level(0)
@@ -35,16 +36,30 @@ class OneAgent
     end
   end
 
-  def self.create_web_application_info(name:, unique_name:, context_root:)
-    name_ptr = FFI::MemoryPointer.from_string(name)
-    unique_name_ptr = FFI::MemoryPointer.from_string(unique_name) 
-    context_root_ptr = FFI::MemoryPointer.from_string(context_root)
+  class OnesdkString < FFI::Struct
+    layout :data, :pointer,
+           :byte_length, :size_t,
+           :ccsid, :int32
+  end
 
-    onesdk_webapplicationinfo_create_p(
-      name_ptr,
-      unique_name_ptr,
-      context_root_ptr
+  def self.create_web_application_info(name:, unique_name:, context_root:)
+    name_struct = OnesdkString.new
+    unique_name_struct = OnesdkString.new
+    context_root_struct = OnesdkString.new
+    
+    [name_struct, unique_name_struct, context_root_struct].zip([name, unique_name, context_root]) do |struct, str|
+      str_ptr = FFI::MemoryPointer.from_string(str)
+      struct[:data] = str_ptr
+      struct[:byte_length] = str.bytesize
+      struct[:ccsid] = 0  # Assuming UTF-8 encoding (0 is typically ASCII/UTF-8)
+    end
+    
+    handle = onesdk_webapplicationinfo_create_p(
+      name_struct.pointer,
+      unique_name_struct.pointer,
+      context_root_struct.pointer
     )
+    handle
   end
 
   def trace(env)
