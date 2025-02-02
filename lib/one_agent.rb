@@ -6,6 +6,7 @@ require 'ffi'
 class OneAgent
   extend FFI::Library
   ffi_lib '/sdk/lib/linux-x86_64/libonesdk_shared.so'
+  ffi_lib '/sdk/lib/linux-x86_64/libonesdk_static.a'
   attach_function :onesdk_initialize, [], :int
   attach_function :onesdk_shutdown, [], :int
   attach_function :onesdk_stub_get_agent_load_info, [:pointer, :pointer], :void
