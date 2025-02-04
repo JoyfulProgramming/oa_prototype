@@ -4,10 +4,9 @@ class TracerMiddleware
   end
 
   def call(env)
-    App.telemetry_client.setup
-    handle = App.telemetry_client.create_web_application_info(name: 'WebShopProduction', unique_name: 'CheckoutService', context_root: '/')
-    throw handle
-    @app.call(env)
+    App.telemetry_client.trace(name: 'WebShopProduction', unique_name: 'CheckoutService', context_root: '/') do
+      @app.call(env)
+    end
   end
 
   private
