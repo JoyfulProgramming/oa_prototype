@@ -23,7 +23,7 @@ class Tracer
   def trace(name:, unique_name:, context_root:, env:)
     web_application_info_handle = @agent.web_application_info_create(name, unique_name, context_root)
     tracer_handle = @agent.incoming_web_request_tracer_create(web_application_info_handle, env['PATH_INFO'], env['REQUEST_METHOD'])
-    @agent.incoming_web_request_tracer_set_remote_address(tracer_handle, env['REMOTE_ADDR'])
+    @agent.incoming_web_request_tracer_set_remote_address(tracer_handle, env['HTTP_X_REAL_IP'] || env['REMOTE_ADDR'])
     env.select { |key, _| key.start_with?('HTTP_') }.each do |uppercase_name, value|
       name = uppercase_name.gsub('HTTP_', '').split('_').map(&:capitalize).join('-')
       @agent.incoming_web_request_tracer_add_request_headers(tracer_handle, name, value, 1)
