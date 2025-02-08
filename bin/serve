@@ -3,14 +3,7 @@
 require 'bundler/setup'
 require_relative '../lib/boot'
 
-# Configure Puma
 rackup_file = File.expand_path('../config.ru', __dir__)
+config_file = File.expand_path('../config/puma.rb', __dir__)
 
-exec(
-  'bundle', 'exec', 'puma',
-  '-e', App.env.to_s,
-  '-b', 'tcp://0.0.0.0:3000',
-  '-t', '0:16',
-  '-w', '2',
-  rackup_file
-)
+exec('bundle', 'exec', 'puma', '-C', config_file, rackup_file)
