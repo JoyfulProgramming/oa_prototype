@@ -58,8 +58,15 @@ class InMemoryAgent
 
   def incoming_web_request_tracer_add_request_headers(tracer_id, name, value, count)
     trace = find_trace_by_id!(tracer_id)
-    trace[:request_headers] ||= []
-    trace[:request_headers] << { name => value }
+    trace[:request_headers] ||= {}
+    trace[:request_headers].merge!(name => value)
+    nil
+  end
+
+  def incoming_web_request_tracer_add_response_headers(tracer_id, name, value, count)
+    trace = find_trace_by_id!(tracer_id)
+    trace[:response_headers] ||= {}
+    trace[:response_headers].merge!(name => value)
     nil
   end
 
