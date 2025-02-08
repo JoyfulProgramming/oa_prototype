@@ -121,12 +121,20 @@ class OneAgent
         onesdk_asciistr(path),
         onesdk_asciistr(http_method)
     );
+    onesdk_incomingwebrequesttracer_set_remote_address_p(tracer, onesdk_asciistr("172.67.3.178"));
 
-    # onesdk_incomingwebrequesttracer_set_remote_address_p(tracer, onesdk_asciistr("1.2.3.4:56789"));
-    # onesdk_incomingwebrequesttracer_add_request_headers_p(tracer,
-        # onesdk_asciistr("Connection"), onesdk_asciistr("keep-alive"));
+    env.select { |k,v| k.start_with?('HTTP_') }.each do |header_name, header_value|
+      formatted_name = header_name.sub('HTTP_', '').split('_').map(&:capitalize).join('-')
+      onesdk_incomingwebrequesttracer_add_request_headers_p(
+        tracer,
+        onesdk_asciistr(formatted_name),
+        onesdk_asciistr(header_value),
+        1
+      );
+    end
 
     onesdk_tracer_start(tracer);
+
 
     response = yield
     status_code, _headers, _body = response
