@@ -67,8 +67,8 @@ class OneAgent
 
   attach_function :onesdk_incomingwebrequesttracer_create_p, [:onesdk_webapplicationinfo_handle_t, OnesdkString.by_ref, OnesdkString.by_ref], :onesdk_tracer_handle_t
 
-  attach_function :onesdk_incomingwebrequesttracer_set_remote_address_p, [:onesdk_tracer_handle_t, :pointer], :void
-  attach_function :onesdk_incomingwebrequesttracer_add_request_headers_p, [:onesdk_tracer_handle_t, :pointer, :pointer], :void
+  attach_function :onesdk_incomingwebrequesttracer_set_remote_address_p, [:onesdk_tracer_handle_t, OnesdkString.by_ref], :void
+  attach_function :onesdk_incomingwebrequesttracer_add_request_headers_p, [:onesdk_tracer_handle_t, OnesdkString.by_ref, OnesdkString.by_ref, :onesdk_size_t], :void
   attach_function :onesdk_incomingwebrequesttracer_set_status_code, [:onesdk_tracer_handle_t, :int], :void
   attach_function :onesdk_tracer_start, [:onesdk_tracer_handle_t], :void
   attach_function :onesdk_tracer_end, [:onesdk_tracer_handle_t], :void
