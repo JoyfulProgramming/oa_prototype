@@ -56,6 +56,11 @@ class OneAgent
     onesdk_incomingwebrequesttracer_add_request_headers_p(tracer_handle, sdk_asciistr(name), sdk_asciistr(value), count)
   end
 
+  attach_function :onesdk_incomingwebrequesttracer_add_response_headers_p, [:onesdk_tracer_handle_t, SDKString.by_ref, SDKString.by_ref, :onesdk_size_t], :void
+  def self.incoming_web_request_tracer_add_response_headers(tracer_handle, name, value, count)
+    onesdk_incomingwebrequesttracer_add_response_headers_p(tracer_handle, sdk_asciistr(name), sdk_asciistr(value), count)
+  end
+
   attach_function :onesdk_incomingwebrequesttracer_set_status_code, [:onesdk_tracer_handle_t, :int], :void
   def self.incoming_web_request_tracer_set_status_code(tracer_handle, status_code)
     onesdk_incomingwebrequesttracer_set_status_code(tracer_handle, status_code)
