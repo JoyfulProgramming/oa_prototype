@@ -53,9 +53,27 @@ class OneAgent
   extend FFI::Library
   ffi_lib '/sdk/lib/linux-x86_64/libonesdk_shared.so'
   attach_function :onesdk_initialize, [], :int
+  def self._initialize
+    onesdk_initialize
+  end
+
   attach_function :onesdk_shutdown, [], :int
+  def self.shutdown
+    onesdk_shutdown
+  end
+
   attach_function :onesdk_stub_get_agent_load_info, [:pointer, :pointer], :void
+  def self.stub_get_agent_load_info(agent_found, agent_compatible)
+    agent_found = FFI::MemoryPointer.new(:int)
+    agent_compatible = FFI::MemoryPointer.new(:int)
+    onesdk_stub_get_agent_load_info(agent_found, agent_compatible)
+    [agent_found.read_int, agent_compatible.read_int]
+  end
+
   attach_function :onesdk_stub_set_logging_level, [:int], :void
+  def self.stub_set_logging_level(level)
+    onesdk_stub_set_logging_level(level)
+  end
 
   typedef :uint64, :onesdk_handle_t
   typedef :onesdk_handle_t, :onesdk_tracer_handle_t
@@ -64,14 +82,39 @@ class OneAgent
   typedef :int32, :onesdk_ccsid_t
 
   attach_function :onesdk_webapplicationinfo_create_p, [OnesdkString.by_ref, OnesdkString.by_ref, OnesdkString.by_ref], :onesdk_webapplicationinfo_handle_t
+  def self.web_application_info_create(name, unique_name, context_root)
+    onesdk_webapplicationinfo_create_p(onesdk_asciistr(name), onesdk_asciistr(unique_name), onesdk_asciistr(context_root))
+  end
 
   attach_function :onesdk_incomingwebrequesttracer_create_p, [:onesdk_webapplicationinfo_handle_t, OnesdkString.by_ref, OnesdkString.by_ref], :onesdk_tracer_handle_t
+  def self.incoming_web_request_tracer_create(web_application_info_handle, path, method)
+    onesdk_incomingwebrequesttracer_create_p(web_application_info_handle, onesdk_asciistr(path), onesdk_asciistr(method))
+  end
 
   attach_function :onesdk_incomingwebrequesttracer_set_remote_address_p, [:onesdk_tracer_handle_t, OnesdkString.by_ref], :void
+  def self.incoming_web_request_tracer_set_remote_address(tracer_handle, remote_address)
+    onesdk_incomingwebrequesttracer_set_remote_address_p(tracer_handle, onesdk_asciistr(remote_address))
+  end
+
   attach_function :onesdk_incomingwebrequesttracer_add_request_headers_p, [:onesdk_tracer_handle_t, OnesdkString.by_ref, OnesdkString.by_ref, :onesdk_size_t], :void
+  def self.incoming_web_request_tracer_add_request_headers(tracer_handle, name, value, count)
+    onesdk_incomingwebrequesttracer_add_request_headers_p(tracer_handle, onesdk_asciistr(name), onesdk_asciistr(value), count)
+  end
+
   attach_function :onesdk_incomingwebrequesttracer_set_status_code, [:onesdk_tracer_handle_t, :int], :void
+  def self.incoming_web_request_tracer_set_status_code(tracer_handle, status_code)
+    onesdk_incomingwebrequesttracer_set_status_code(tracer_handle, status_code)
+  end
+
   attach_function :onesdk_tracer_start, [:onesdk_tracer_handle_t], :void
+  def self.tracer_start(tracer_handle)
+    onesdk_tracer_start(tracer_handle)
+  end
+
   attach_function :onesdk_tracer_end, [:onesdk_tracer_handle_t], :void
+  def self.tracer_end(tracer_handle)
+    onesdk_tracer_end(tracer_handle)
+  end
 
   def self.setup
     onesdk_stub_set_logging_level(0)
@@ -121,7 +164,6 @@ class OneAgent
         onesdk_asciistr(path),
         onesdk_asciistr(http_method)
     );
-    onesdk_incomingwebrequesttracer_set_remote_address_p(tracer, onesdk_asciistr("172.67.3.178"));
 
     env.select { |k,v| k.start_with?('HTTP_') }.each do |header_name, header_value|
       formatted_name = header_name.sub('HTTP_', '').split('_').map(&:capitalize).join('-')
@@ -133,14 +175,23 @@ class OneAgent
       );
     end
 
+    onesdk_incomingwebrequesttracer_set_remote_address_p(tracer, onesdk_asciistr("213.122.230.211"));
+
     onesdk_tracer_start(tracer);
 
 
     response = yield
-    status_code, _headers, _body = response
+    status_code, response_headers, _body = response
 
-    # onesdk_incomingwebrequesttracer_add_response_headers_p(tracer,
-        # onesdk_asciistr("Transfer-Encoding"), onesdk_asciistr("chunked"));
+    response_headers.select { |k,v| k.start_with?('HTTP_') }.each do |header_name, header_value|
+      formatted_name = header_name.sub('HTTP_', '').split('_').map(&:capitalize).join('-')
+      onesdk_incomingwebrequesttracer_add_response_headers_p(
+        tracer,
+        onesdk_asciistr(formatted_name),
+        onesdk_asciistr(header_value),
+        1
+      );
+    end
     onesdk_incomingwebrequesttracer_set_status_code(tracer, status_code);
 
     # if attrs[:error]
@@ -149,5 +200,9 @@ class OneAgent
 
     onesdk_tracer_end(tracer);
     response
+  end
+  
+  def self.events
+    []
   end
 end

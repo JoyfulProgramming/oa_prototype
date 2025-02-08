@@ -1,1 +1,1 @@
-App.telemetry_client.setup
+App.tracer.setup
