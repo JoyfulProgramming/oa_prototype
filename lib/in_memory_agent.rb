@@ -1,8 +1,7 @@
 class InMemoryAgent
-  attr_reader :events
+  attr_reader :traces, :web_application_info, :logging_level
 
   def initialize
-    @events = []
     @traces = []
     @web_application_info = {}
     @logging_level = nil
@@ -18,14 +17,9 @@ class InMemoryAgent
   end
 
   def clear!
-    @events = []
     @traces = []
     @web_application_info = {}
     @logging_level = nil
-  end
-
-  def latest_trace
-    @traces.last || raise('No trace found')
   end
 
   def stub_set_logging_level(level)
@@ -54,10 +48,6 @@ class InMemoryAgent
       application_info: @web_application_info.fetch(web_application_info_id)
     }
     id
-  end
-
-  def find_trace_by_id!(id)
-    @traces.find { |trace| trace[:id] == id } || raise('Trace not found')
   end
 
   def incoming_web_request_tracer_set_remote_address(tracer_id, remote_address)
@@ -91,11 +81,7 @@ class InMemoryAgent
     nil
   end
 
-  def traces
-    @traces
-  end
-
-  def web_application_info
-    @web_application_info
+  def find_trace_by_id!(id)
+    traces.find { |trace| trace[:id] == id } || raise('Trace not found')
   end
 end
