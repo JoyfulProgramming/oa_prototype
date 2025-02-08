@@ -111,10 +111,15 @@ class OneAgent
       context_root: attrs[:context_root] || "unknown"
     )
 
+    env = attrs.fetch(:env)
+    http_method = env['REQUEST_METHOD']
+    path = env['PATH_INFO']
+    # remote_address = env['REMOTE_ADDR']
+
     tracer = onesdk_incomingwebrequesttracer_create_p(
         web_application_info_handle,
-        onesdk_asciistr('/aaa'),
-        onesdk_asciistr('GET')
+        onesdk_asciistr(path),
+        onesdk_asciistr(http_method)
     );
 
     # onesdk_incomingwebrequesttracer_set_remote_address_p(tracer, onesdk_asciistr("1.2.3.4:56789"));
@@ -124,10 +129,11 @@ class OneAgent
     onesdk_tracer_start(tracer);
 
     response = yield
+    status_code, _headers, _body = response
 
     # onesdk_incomingwebrequesttracer_add_response_headers_p(tracer,
         # onesdk_asciistr("Transfer-Encoding"), onesdk_asciistr("chunked"));
-    onesdk_incomingwebrequesttracer_set_status_code(tracer, 124);
+    onesdk_incomingwebrequesttracer_set_status_code(tracer, status_code);
 
     # if attrs[:error]
       # onesdk_tracer_error_p(tracer, onesdk_asciistr("error type"), onesdk_asciistr("error message"));

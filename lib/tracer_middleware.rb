@@ -4,7 +4,7 @@ class TracerMiddleware
   end
 
   def call(env)
-    App.telemetry_client.trace(name: 'WebShopProduction', unique_name: 'CheckoutService', context_root: '/') do
+    App.telemetry_client.trace(name: 'destroyallai.com:80', unique_name: 'destroyallai.com:80', context_root: '/', env: env) do
       @app.call(env)
     end
   end
