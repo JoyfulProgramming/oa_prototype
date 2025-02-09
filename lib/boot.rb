@@ -1,6 +1,9 @@
 require 'dry/configurable'
 require 'sinatra'
 
+require 'rbtrace'
+require 'pry-remote'
+
 require_relative 'tracer.rb'
 require_relative 'app.rb'
 require_relative "../config/#{App.env}.rb"
