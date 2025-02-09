@@ -4,6 +4,7 @@ require 'semantic_logger'
 
 require_relative 'tracer.rb'
 require_relative 'app.rb'
+require_relative '../config/flat_json_formatter.rb'
 require_relative "../config/#{App.env}.rb"
 require_relative '../config/initializers/telemetry_client.rb'
 
