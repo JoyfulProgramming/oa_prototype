@@ -8,8 +8,9 @@ fi
 
 if ! rbenv versions | grep -q "3.4.1"; then
     echo "Error: Ruby 3.4.1 not found"
-    echo "Please install Ruby 3.4.1: rbenv install 3.4.1"
-    exit 1
+
+    echo "Installing Ruby 3.4.1..."
+    rbenv install 3.4.1
 fi
 
 bundle install
