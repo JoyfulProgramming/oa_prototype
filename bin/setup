@@ -1,3 +1,15 @@
 #/usr/bin/env bash
 
+if ! command -v rbenv &> /dev/null; then
+    echo "Error: rbenv not found"
+    echo "Please install rbenv: https://github.com/rbenv/rbenv"
+    exit 1
+fi
+
+if ! rbenv versions | grep -q "3.4.1"; then
+    echo "Error: Ruby 3.4.1 not found"
+    echo "Please install Ruby 3.4.1: rbenv install 3.4.1"
+    exit 1
+fi
+
 bundle install
