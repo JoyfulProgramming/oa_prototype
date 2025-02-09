@@ -29,12 +29,15 @@ class Tracer
       @agent.incoming_web_request_tracer_add_request_headers(tracer_handle, name, value, 1)
     end
     @agent.tracer_start(tracer_handle)
+
     status, headers, body = yield
+
     @agent.incoming_web_request_tracer_set_status_code(tracer_handle, status)
     headers.each do |name, value|
       @agent.incoming_web_request_tracer_add_response_headers(tracer_handle, name, value, 1)
     end
     @agent.tracer_end(tracer_handle)
+
     [status, headers, body]
   end
 
