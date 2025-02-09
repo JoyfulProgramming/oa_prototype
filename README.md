@@ -8,7 +8,7 @@ OA client for Ruby.
 bin/setup
 ```
 
-Assumption - you've installed `rbenv` locally.
+Needs `rbenv`.
 
 ## Tests
 
