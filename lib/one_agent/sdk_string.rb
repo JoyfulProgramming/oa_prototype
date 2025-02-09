@@ -6,7 +6,6 @@ class OneAgent
            :byte_length, :size_t,
            :ccsid, :uint16
 
-    # CCSID Constants matching the C SDK
     CCSID_NULL      = 0
     CCSID_ASCII     = 367
     CCSID_ISO8859_1 = 819
@@ -27,12 +26,10 @@ class OneAgent
       return nullstr if str.nil?
       
       struct = new
-      # Create a memory pointer that won't be garbage collected
       str_ptr = FFI::MemoryPointer.from_string(str)
       struct[:data] = str_ptr
       struct[:byte_length] = str.bytesize
       struct[:ccsid] = ccsid
-      # Store the pointer as an instance variable to prevent GC
       struct.instance_variable_set(:@str_ptr, str_ptr)
       struct
     end
