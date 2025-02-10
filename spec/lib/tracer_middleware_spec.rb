@@ -11,8 +11,7 @@ RSpec.describe TracerMiddleware do
 
   describe '#call' do
     it 'traces the request and adds an event' do
-      # Make the request
-      status, headers, body = middleware.call(env)
+      middleware.call(env)
 
       traces = App.telemetry_client.traces
       expect(traces.size).to eq(1)
@@ -33,12 +32,10 @@ RSpec.describe TracerMiddleware do
       error_app = ->(_env) { raise 'Boom!' }
       error_middleware = described_class.new(error_app)
 
-      # Expect the error to be raised
       expect {
         error_middleware.call(env)
       }.to raise_error('Boom!')
 
-      # Verify the trace event was still created
       traces = App.telemetry_client.traces
       expect(traces.size).to eq(1)
       
